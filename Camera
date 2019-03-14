@@ -2,21 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Camera : MonoBehaviour
-
+public class CameraFollow : MonoBehaviour
 {
- public Transform Player;
 
- public float smoothSpeed = 0.125f;
-public Vector3 offset;
 
-void FixedUpdate ()
-{
-Vector3 desiredPostion = target.position + offset;
-Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed)
-transform.position = smoothedPosition;
+    public Transform target; //Whatever the camera is following
+    public float smoothing;
 
-transform.LookAt(Player);
-}
- 
+    Vector3 offset;
+
+    float lowY; 
+    
+    
+    
+    
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        offset = transform.position - target.position;
+
+        lowY = transform.position.y;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Vector3 targetCamPos = target.position + offset;
+
+        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+
+        if(transform.position.y < lowY) transform.position = new Vector3(transform.position.x, lowY, transform.position.z);  
+
+    //Prevents camera from following the player when it falls off the map
+    }
 }
